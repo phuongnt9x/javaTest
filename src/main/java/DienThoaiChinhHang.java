@@ -3,12 +3,11 @@ public class DienThoaiChinhHang extends DienThoai {
 	int thoiGianBaoHanh;
 	String phamViBaoHanh;
 
-	public DienThoaiChinhHang(String tenDienThoai, float giaBan, int soLuong, String nhaSanXuat, int thoiGianBaoHanh,
+	public DienThoaiChinhHang(int id,String tenDienThoai, float giaBan, int soLuong, String nhaSanXuat, int thoiGianBaoHanh,
 			String phamViBaoHanh) {
-		super(tenDienThoai, giaBan, soLuong, nhaSanXuat);
+		super(id,tenDienThoai, giaBan, soLuong, nhaSanXuat);
 		this.thoiGianBaoHanh = thoiGianBaoHanh;
 		this.phamViBaoHanh = phamViBaoHanh;
-		id++;
 	}
 
 	public DienThoaiChinhHang() {
@@ -18,14 +17,13 @@ public class DienThoaiChinhHang extends DienThoai {
 	@Override
 	public String xuatDuLieu() {
 		return id + "," + tenDienThoai + "," + giaBan + "," + soLuong + "," + nhaSanXuat + "," + thoiGianBaoHanh + ","
-				+ phamViBaoHanh;
+				+ phamViBaoHanh+","+PhanLoaiDienThoai.CHINH_HANG+"\n";
 	}
 
 	@Override
 	public String toString() {
-		return "DienThoaiChinhHang [thoiGianBaoHanh=" + thoiGianBaoHanh + ", phamViBaoHanh=" + phamViBaoHanh
-				+ ", tenDienThoai=" + tenDienThoai + ", giaBan=" + giaBan + ", soLuong=" + soLuong + ", nhaSanXuat="
-				+ nhaSanXuat + "]";
+		return "DienThoaiChinhHang [TenDienThoai=" + tenDienThoai + ", giaBan=" + giaBan + ", soLuong=" + soLuong + ", nhaSanXuat="
+				+ nhaSanXuat +"thoiGianBaoHanh=" + thoiGianBaoHanh + ", phamViBaoHanh=" + phamViBaoHanh+ "]";
 	}
 
 }

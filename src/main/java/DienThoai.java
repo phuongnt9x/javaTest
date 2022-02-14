@@ -1,5 +1,5 @@
 public abstract class DienThoai {
-	static int id = 0;
+	int id;
 	String tenDienThoai;
 	float giaBan;
 	int soLuong;
@@ -8,7 +8,8 @@ public abstract class DienThoai {
 	public DienThoai() {
 	}
 
-	public DienThoai(String tenDienThoai, float giaBan, int soLuong, String nhaSanXuat) {
+	public DienThoai(int id,String tenDienThoai, float giaBan, int soLuong, String nhaSanXuat) {
+		this.id=id;
 		this.tenDienThoai = tenDienThoai;
 		this.giaBan = giaBan;
 		this.soLuong = soLuong;

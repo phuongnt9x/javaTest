@@ -9,7 +9,6 @@ public class Main {
 		int chucNang;
 		Scanner scanner = new Scanner(System.in);
 		QuanLyDienThoai qLyDienThoai = new QuanLyDienThoai();
-		qLyDienThoai.layIdTrongFile();
 		do {
 			hienThiMenu();
 			chucNang = scanner.nextInt();
@@ -29,12 +28,12 @@ public class Main {
 				qLyDienThoai.hienThiDS();
 				break;
 			case 4:
-				List<String> listTK=qLyDienThoai.timKiemDT();
-				if(listTK==null) {
+				List<DienThoai> listTK=qLyDienThoai.timKiemDT();				
+				if(listTK.isEmpty()) {
 					System.out.println("Khong tim thay");
 				}else {
 					System.out.println("Danh sach tim kiem");
-					for(String dienThoai:listTK) {
+					for(DienThoai dienThoai:listTK) {
 						System.out.println(dienThoai);
 					}
 				}

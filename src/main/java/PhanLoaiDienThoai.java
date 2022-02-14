@@ -9,11 +9,11 @@ public class PhanLoaiDienThoai {
 	public static final String TOAN_QUOC = "Toan quoc";
 	public static final String CHINH_HANG = "chinh hang";
 	Scanner scanner=new Scanner(System.in);
-	public DienThoai getDienThoai(String type) {
+	public DienThoai getDienThoai(String type,int id) {
 		if (CHINH_HANG.equalsIgnoreCase(type)) {
-			return new DienThoaiChinhHang(nhapTenDienThoai(),nhapGiaBan(),nhapSoLuong(),nhapNhaSX(),nhapThoiGianBH(),nhapPhamViBH());
+			return new DienThoaiChinhHang(id,nhapTenDienThoai(),nhapGiaBan(),nhapSoLuong(),nhapNhaSX(),nhapThoiGianBH(),nhapPhamViBH());
 		} else if (XACH_TAY.equalsIgnoreCase(type)) {
-			return new DienThoaiXachTay(nhapTenDienThoai(),nhapGiaBan(),nhapSoLuong(),nhapNhaSX(),nhapQuocGiaXT(),nhapTrangThai());
+			return new DienThoaiXachTay(id,nhapTenDienThoai(),nhapGiaBan(),nhapSoLuong(),nhapNhaSX(),nhapQuocGiaXT(),nhapTrangThai());
 		}
 		return null;
 	}

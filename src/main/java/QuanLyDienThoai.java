@@ -12,33 +12,36 @@ import java.util.regex.Pattern;
 
 public class QuanLyDienThoai {
 	public static final String FILE_NAME = "dienthoai.csv";
-	File file = new File(FILE_NAME);
-	Scanner scanner=new Scanner(System.in);
+	Scanner scanner = new Scanner(System.in);
+	List<DienThoai> listDT = new ArrayList<DienThoai>();
+
+	public QuanLyDienThoai() throws IOException {
+		fileToListDT();
+	}
 
 	public void xoaDienThoai() throws IOException, NotFoundProductException {
 		int id;
-		Boolean found = false;
+		DienThoai found = null;
 		do {
 			System.out.println("Nhap id dien thoai");
 			id = scanner.nextInt();
-			found = kiemTraID(id);
-			if (found == false) {
+			found = timKiemDT_Id(id);
+			if (found == null) {
 				throw new NotFoundProductException();
 			}
-		} while (found == false);
+		} while (found == null);
 		try {
 			int chon;
 			System.out.println("Ban muon xoa khong ?(1==co, khac=khong)");
 			chon = scanner.nextInt();
 			if (chon == 1) {
-				List<String> lisStrings = fileToList();
+				listDT.remove(found);
+				List<String> lisStrings = fileToListString();
+				File file = new File(FILE_NAME);
 				FileWriter fileWriter = new FileWriter(file);
 				BufferedWriter bw = new BufferedWriter(fileWriter);
-				for (String line : lisStrings) {
-					String g[] = line.split(",");
-					if (id == Integer.parseInt(g[0]))
-						continue;
-					bw.write(line);
+				for(DienThoai dienThoai:listDT) {
+					bw.write(dienThoai.xuatDuLieu());
 				}
 
 			}
@@ -49,28 +52,27 @@ public class QuanLyDienThoai {
 		}
 	}
 
-	public boolean kiemTraID(int id) throws IOException {
-		try {
-			FileReader fileReader = new FileReader(file);
-			BufferedReader br = new BufferedReader(fileReader);
-			String line = br.readLine();
-			while (line != null) {
-				String s[] = line.split(",");
-				if (id == Integer.parseInt(s[0]))
-					return true;
-				line = br.readLine();
+	public boolean kiemTraID(int id) {
+		for (DienThoai dienThoai : listDT) {
+			if (id == dienThoai.id) {
+				return true;
 			}
-			br.close();
-			fileReader.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		}
 		return false;
 	}
+	public DienThoai timKiemDT_Id(int id) {
+		for (DienThoai dienThoai : listDT) {
+			if (id == dienThoai.id) {
+				return dienThoai;
+			}
+		}
+		return null;
+	}
 
-	public List<String> fileToList() throws IOException {
+	public List<String> fileToListString() throws IOException {
 		List<String> list = new ArrayList<String>();
 		try {
+			File file = new File(FILE_NAME);
 			FileReader fileReader = new FileReader(file);
 			BufferedReader br = new BufferedReader(fileReader);
 			String line = br.readLine();
@@ -87,9 +89,13 @@ public class QuanLyDienThoai {
 	public void themMoi() throws IOException {
 		String loaiDienThoai;
 		PhanLoaiDienThoai phanLoaiDienThoai = new PhanLoaiDienThoai();
-		System.out.println("Chon loai dien thoai(chinh hang, xach tay): ");
-		loaiDienThoai = scanner.nextLine();
-		DienThoai dienThoai = phanLoaiDienThoai.getDienThoai(loaiDienThoai);
+		do {
+			System.out.println("Chon loai dien thoai(chinh hang, xach tay): ");
+			loaiDienThoai = scanner.nextLine();
+		}while(!loaiDienThoai.equals(phanLoaiDienThoai.CHINH_HANG) && !loaiDienThoai.equals(phanLoaiDienThoai.XACH_TAY) );
+		DienThoai dienThoai = phanLoaiDienThoai.getDienThoai(loaiDienThoai,tangID());
+		listDT.add(dienThoai);
+		File file = new File(FILE_NAME);
 		FileWriter fileWriter = new FileWriter(file, true);
 		BufferedWriter bw = new BufferedWriter(fileWriter);
 		bw.write(dienThoai.xuatDuLieu());
@@ -97,51 +103,58 @@ public class QuanLyDienThoai {
 		System.out.println("Them dien thoai thanh cong !!!");
 
 	}
+
 	public void hienThiDS() throws IOException {
-		try {
-			FileReader fileReader = new FileReader(file);
-			BufferedReader br = new BufferedReader(fileReader);
-			String line = br.readLine();
-			while (line != null) {
-				System.out.println(line);
-				line = br.readLine();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		for (DienThoai dienThoai : listDT) {
+			System.out.println(dienThoai.toString());
 		}
 	}
-	public List<String> timKiemDT() throws IOException {
-		List<String> listDT=fileToList();
+
+	public List<DienThoai> timKiemDT() {
 		String tenDienThoai = "";
-		List<String> listTimKiem=new ArrayList();
+		List<DienThoai> listTimKiem = new ArrayList<DienThoai>();
 		System.out.println("Nhap ten dien thoai");
 		tenDienThoai = scanner.nextLine();
-		for(String dienThoai:listDT) {
-			String s[] = dienThoai.split(",");
-			if (Pattern.matches(tenDienThoai, s[1]))
+		String pattern=".*"+tenDienThoai+".*";
+		for (DienThoai dienThoai : listDT) {
+			if (dienThoai.tenDienThoai.matches(pattern))
 				listTimKiem.add(dienThoai);
 		}
 
-
 		return listTimKiem;
 	}
-	public void layIdTrongFile() throws IOException {
+
+	public List<DienThoai> fileToListDT() throws IOException {
 		try {
+			File file = new File(FILE_NAME);
 			FileReader fileReader = new FileReader(file);
 			BufferedReader br = new BufferedReader(fileReader);
-			int id = 0;
 			String line = br.readLine();
 			while (line != null) {
 				String s[] = line.split(",");
-				id = Integer.parseInt(s[0]);
-				if (DienThoai.id < id)
-					DienThoai.id = id;
+				if (PhanLoaiDienThoai.CHINH_HANG.equalsIgnoreCase(s[7])) {
+					listDT.add(new DienThoaiChinhHang(Integer.parseInt(s[0]), s[1], Float.parseFloat(s[2]),
+							Integer.parseInt(s[3]), s[4], Integer.parseInt(s[5]), s[6]));
+				} else if (PhanLoaiDienThoai.XACH_TAY.equalsIgnoreCase(s[7])) {
+					listDT.add(new DienThoaiXachTay(Integer.parseInt(s[0]), s[1], Float.parseFloat(s[2]),
+							Integer.parseInt(s[3]), s[4], s[5], s[6]));
+				}
 				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		return listDT;
 	}
 
+	public int tangID() {
+		int id = 0;
+		for (DienThoai dienThoai : listDT) {
+			if (id < dienThoai.id) {
+				id = dienThoai.id;
+			}
+		}
+		return ++id;
+	}
 
 }
